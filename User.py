@@ -6,7 +6,9 @@ class User:
         self.name = name
         self.mention = mention
         self.id = id
-
+    
+    # appends users data to the json file
+    # needs to implement a check to prevent duplication
     def push_to_JSON(self):
         info = {
             "name": self.name,
@@ -14,17 +16,24 @@ class User:
             "id": self.id
         }
 
-        with open("usersList.json", "a") as outfile:
+        json_object = json.dumps(info, indent=4)
+        
+        #file_check = os.stat("users.json").st_size
 
-            outfile.write("{")
-            for key in info:
-                outfile.write("\n\"{key}\": \"{value}\",".format(key = key, value = info[key]))
-            outfile.write("}")
+        with open("users.json", "r+") as outfile:
+            check = os.stat("users.json").st_size
+            # outfile.seek(-2, os.SEEK_END)
+            # outfile.truncate()
 
-            # if os.stat("usersList.json").st_size == 0:
-            #     json.dump(info, outfile)
-            
-            # else:
-            #     #read line and delete bracket
+            if check == 0:
+                outfile.write(json_object)
+            else:
+                loaded = json.load(outfile)
+                loaded.update(info)
+                #outfile.seek(0)
+                outfile.write(',\n')
+                json.dump(info, outfile, indent=4)
 
-            #     outfile.write(",{user_json}\n".format(user_json=json.dumps(info)))
+    # TODO append the users week picks to their unique registered ID     
+    def append_week_pickems():
+        return
